@@ -50,6 +50,11 @@ async def keyPress():
 			await turnLeft()
 			await asyncio.sleep( 0.5 )
 			await disableMotors()
+		elif keyboard.is_pressed( 'w' ):
+			await turnRight()
+			await turnLeft()
+			await asyncio.sleep( 0.5 )
+			await disableMotors()
 
 async def connect():
 	print( "Scanning for droids..." )
