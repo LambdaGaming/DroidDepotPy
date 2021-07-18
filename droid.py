@@ -37,25 +37,19 @@ async def disableMotors():
 	await CLIENT.write_gatt_char( WRITE_UUID, bytearray.fromhex( "2942 0546 0000 012C 0000" ) )
 	await CLIENT.write_gatt_char( WRITE_UUID, bytearray.fromhex( "2942 0546 0100 012C 0000" ) )
 
-async def checkForSoundPress():
-	while True:
-		keyboard.wait( '1' )
-		await playRandomSound()
-		await asyncio.sleep( 1 )
-
-async def checkForRightPress():
-	while True:
-		keyboard.wait( 'd' )
-		await turnRight()
-		await asyncio.sleep( 0.5 )
-		await disableMotors()
-
-async def checkForLeftPress():
-	while True:
-		keyboard.wait( 'a' )
-		await turnLeft()
-		await asyncio.sleep( 0.5 )
-		await disableMotors()
+async def keyPress():
+	while True: #TODO: Make this less CPU-intensive
+		if keyboard.is_pressed( '1' ):
+			await playRandomSound()
+			await asyncio.sleep( 1 )
+		elif keyboard.is_pressed( 'd' ):
+			await turnRight()
+			await asyncio.sleep( 0.5 )
+			await disableMotors()
+		elif keyboard.is_pressed( 'a' ):
+			await turnLeft()
+			await asyncio.sleep( 0.5 )
+			await disableMotors()
 
 async def connect():
 	print( "Scanning for droids..." )
@@ -96,9 +90,7 @@ async def connect():
 				await CLIENT.write_gatt_char( WRITE_UUID, bytearray.fromhex( "27420f4444001802" ) )
 				await asyncio.sleep( 2 )
 				print( "Connection to droid established! Droid is ready to accept inputs!" )
-				await checkForSoundPress()
-				await checkForRightPress()
-				await checkForLeftPress()
+				await keyPress()
 			except KeyboardInterrupt:
 				print( "Program stopped by user." )
 			except BaseException as e:
